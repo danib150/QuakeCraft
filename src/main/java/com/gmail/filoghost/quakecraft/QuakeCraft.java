@@ -1,34 +1,6 @@
 package com.gmail.filoghost.quakecraft;
 
-import java.io.File;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.TreeMap;
-import java.util.logging.Logger;
-
-import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
-import org.bukkit.World;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.plugin.Plugin;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.scheduler.BukkitRunnable;
-
-import com.gmail.filoghost.quakecraft.commands.ArenaCommand;
-import com.gmail.filoghost.quakecraft.commands.ClassificaCommand;
-import com.gmail.filoghost.quakecraft.commands.CoinsCommand;
-import com.gmail.filoghost.quakecraft.commands.KillallCommand;
-import com.gmail.filoghost.quakecraft.commands.QuakeCommand;
-import com.gmail.filoghost.quakecraft.commands.RankCommand;
-import com.gmail.filoghost.quakecraft.commands.SpawnCommand;
-import com.gmail.filoghost.quakecraft.commands.StartCommand;
-import com.gmail.filoghost.quakecraft.commands.StatsCommand;
-import com.gmail.filoghost.quakecraft.commands.TestCommand;
+import com.gmail.filoghost.quakecraft.commands.*;
 import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
 import com.gmail.filoghost.quakecraft.constants.Lang;
 import com.gmail.filoghost.quakecraft.enums.GameState;
@@ -48,6 +20,24 @@ import com.gmail.filoghost.quakecraft.utils.Debug;
 import com.gmail.filoghost.quakecraft.utils.Ranking;
 import com.gmail.filoghost.quakecraft.utils.SettingsChecker;
 import com.gmail.filoghost.quakecraft.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.ChatColor;
+import org.bukkit.World;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+import java.util.TreeMap;
+import java.util.logging.Logger;
 
 public class QuakeCraft extends JavaPlugin {
 
@@ -65,19 +55,9 @@ public class QuakeCraft extends JavaPlugin {
 
     @Override
     public void onEnable() {
-        if (!Bukkit.getPluginManager().isPluginEnabled("WildCommons")) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[" + this.getName() + "] Richiesto WildCommons!");
-            try {
-                Thread.sleep(10000);
-            } catch (InterruptedException e) {
-            }
-            setEnabled(false);
-            Bukkit.shutdown();
-            return;
-        }
 
-        if (!Bukkit.getPluginManager().isPluginEnabled("HolographicDisplays")) {
-            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[" + this.getName() + "] Richiesto HolographicDisplays!");
+        if (!Bukkit.getPluginManager().isPluginEnabled("DecentHolograms")) {
+            Bukkit.getConsoleSender().sendMessage(ChatColor.RED + "[" + this.getName() + "] Richiesto DecentHolograms!");
             setEnabled(false);
             Bukkit.shutdown();
             return;

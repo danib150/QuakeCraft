@@ -3,6 +3,7 @@ main: com.gmail.filoghost.quakecraft.QuakeCraft
 version: 1.0
 
 softdepend: [DecentHolograms]
+api-version: 1.21
 
 commands:
   quake:
