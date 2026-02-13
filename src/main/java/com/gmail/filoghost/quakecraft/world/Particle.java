@@ -62,9 +62,15 @@ public enum Particle {
         World world = loc.getWorld();
         if (world == null) return;
 
-        world.spawnParticle(particle, loc, amount, dx, dy, dz, speed);
-    }
+        try {
 
+            world.spawnParticle(particle, loc, amount, dx, dy, dz, speed);
+
+        } catch (IllegalArgumentException ex) {
+
+            world.spawnParticle(org.bukkit.Particle.CLOUD, loc, amount, dx, dy, dz, speed);
+        }
+    }
     public void displayPlayer(@NonNull Player player,
                               @NonNull Location loc,
                               double dx, double dy, double dz,

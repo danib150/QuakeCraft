@@ -39,6 +39,7 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.util.RayTraceResult;
 
 import java.util.*;
 
@@ -388,72 +389,83 @@ public class Arena {
 		Cooldown.addPlayer(player, cooldown);
 		shotEvent(QuakePlayer.get(player));
 	}
-	
-	
+
+
 	public void shotEvent(QuakePlayer shooter) {
-		
-		SightInfo target = RayTrace.getSightIncludePlayers(shooter.getBase(), gamers, Numbers.BOUNDING_BOX_GROWTH);
-		
-		double x = target.getLocation().getX();
-		double y = target.getLocation().getY();
-		double z = target.getLocation().getZ();
-		
-		
-		ParticleUtils.trail(shooter.getTrail().getParticle(), shooter.getBase().getEyeLocation(), target.getLocation());
-		
-		List<Player> affectedPlayers = new ArrayList<Player>();
-		
-		//magari non l'ha preso in pieno
+
+		SightInfo target = RayTrace.getSightIncludePlayers(
+				shooter.getBase(),
+				gamers,
+				Numbers.BOUNDING_BOX_GROWTH
+		);
+
+		Location hitLoc = null;
+
+		// player hit
+		if (target.getLocation() != null) {
+			hitLoc = target.getLocation();
+		}
+
+		// fallback blocco hit
+		if (hitLoc == null) {
+			RayTraceResult result = shooter.getBase().rayTraceBlocks(50);
+
+			if (result != null) {
+                result.getHitPosition();
+                hitLoc = result.getHitPosition()
+                        .toLocation(shooter.getBase().getWorld());
+            }
+		}
+
+		// se ancora nulla → non sparare
+		if (hitLoc == null) {
+			wrongHitSound(shooter.getBase().getLocation());
+			return;
+		}
+
+		// Trail sempre visibile
+		ParticleUtils.trail(
+				shooter.getTrail().getParticle(),
+				shooter.getBase().getEyeLocation(),
+				hitLoc
+		);
+
+		double x = hitLoc.getX();
+		double y = hitLoc.getY();
+		double z = hitLoc.getZ();
+
+		List<Player> affectedPlayers = new ArrayList<>();
+
 		if (target.getPlayer() != null && !target.getPlayer().isDead()) {
-			//pareggia il livello per le multikill
+
 			y = target.getPlayer().getLocation().getY();
-			
+
 			if (target.getPlayer().hasPotionEffect(PotionEffectType.RESISTANCE)) {
 				shooter.sendMessage(Lang.ARENA_PLAYER_PROTECTED);
 			} else {
 				affectedPlayers.add(target.getPlayer());
 			}
 		}
-		
+
 		for (Player gamer : gamers) {
 			if (gamer != shooter.getBase() && gamer != target.getPlayer() && !gamer.isDead() && Utils.isInCylinder(gamer, x, y, z)) {
-				
+
 				if (gamer.hasPotionEffect(PotionEffectType.RESISTANCE)) {
 					shooter.sendMessage(Lang.ARENA_PLAYER_PROTECTED);
 				} else {
 					affectedPlayers.add(gamer);
 				}
-				
 			}
 		}
-		
-		int amount = affectedPlayers.size();
-		
-		if (amount > 0) {
-			
-			goodHitSound(target.getLocation(), shooter);
-			
+
+		if (!affectedPlayers.isEmpty()) {
+
+			goodHitSound(hitLoc, shooter);
+
 			for (Player affected : affectedPlayers) {
 				killEvent(shooter.getBase(), affected);
 			}
-				
-			if (amount > 2) {
-				if (amount == 2) {
-					tellAll("§b" + shooter.getName() + " ha fatto una Doppia Uccisione!");
-				} else {
-					tellAll("§b" + shooter.getName() + " ha fatto una Uccisione Multipla (" + amount + ")!");
-				}
-				/*
-				Booster booster = BoostersBridge.getActiveBooster(QuakeCraft.PLUGIN_ID);
-				int extraCoins = BoostersBridge.applyMultiplier(amount, booster);
-				shooter.addCoins(extraCoins);
-				shooter.sendMessage("§3§o+" + amount + " Coins extra" + (BoostersBridge.messageSuffix(booster)));
-				TODO add vault impl
-				 */
-				
 
-			}
-		
 		} else {
 			wrongHitSound(shooter.getBase().getLocation());
 		}
