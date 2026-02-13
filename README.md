@@ -24,7 +24,7 @@ Questo progetto è rivolto principalmente a **programmatori esperti**, perché:
 
 Per compilare correttamente il progetto, è necessario:
 
-- Java 17+ (consigliato per Minecraft 1.20+ / 1.21)
+- Java 21+ (testato per Minecraft 1.21)
 - Paper/Spigot API compatibile con la versione target
 - Installare **Lombok** nel proprio IDE:
 
