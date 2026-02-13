@@ -3,11 +3,11 @@ package com.gmail.filoghost.quakecraft.timers;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.gmail.filoghost.quakecraft.utils.PlayerUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitScheduler;
 
-import wild.api.WildCommons;
 
 import com.gmail.filoghost.quakecraft.QuakeCraft;
 
@@ -48,7 +48,7 @@ public class Cooldown {
 			
 			@Override
 			public void run() {
-				WildCommons.sendExperiencePacket(player, exp, 0);
+				PlayerUtils.sendExperiencePacket(player, exp, 0);
 				exp -= step;
 			}
 			
@@ -58,7 +58,7 @@ public class Cooldown {
 			@Override
 			public void run() {
 				scheduler.cancelTask(taskID);
-				WildCommons.sendExperiencePacket(player, 0f, 0);
+				PlayerUtils.sendExperiencePacket(player, 0F, 0);
 			}
 		}, duration);
 		

@@ -1,10 +1,9 @@
 package com.gmail.filoghost.quakecraft.timers;
 
-import wild.api.world.Particle;
-
 import com.gmail.filoghost.quakecraft.constants.Numbers;
 import com.gmail.filoghost.quakecraft.objects.PowerUp;
 import com.gmail.filoghost.quakecraft.utils.ParticleUtils;
+import com.gmail.filoghost.quakecraft.world.Particle;
 
 public class FlameEffectTimer extends TimerMaster {
 

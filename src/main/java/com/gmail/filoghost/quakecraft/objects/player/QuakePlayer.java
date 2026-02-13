@@ -1,15 +1,17 @@
 package com.gmail.filoghost.quakecraft.objects.player;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.gmail.filoghost.quakecraft.QuakeCraft;
+import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
+import com.gmail.filoghost.quakecraft.constants.Lang;
+import com.gmail.filoghost.quakecraft.enums.Gui;
+import com.gmail.filoghost.quakecraft.enums.UpgradeType;
+import com.gmail.filoghost.quakecraft.objects.upgrades.Upgrade;
+import com.gmail.filoghost.quakecraft.utils.Debug;
+import com.gmail.filoghost.quakecraft.utils.EasySound;
+import com.gmail.filoghost.quakecraft.utils.Validator;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.FireworkEffect;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
@@ -18,18 +20,11 @@ import org.bukkit.scoreboard.DisplaySlot;
 import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Scoreboard;
 
-import wild.api.WildConstants;
-import wild.api.sound.EasySound;
-import wild.api.util.FakeOfflinePlayer;
-
-import com.gmail.filoghost.quakecraft.QuakeCraft;
-import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
-import com.gmail.filoghost.quakecraft.constants.Lang;
-import com.gmail.filoghost.quakecraft.enums.Gui;
-import com.gmail.filoghost.quakecraft.enums.UpgradeType;
-import com.gmail.filoghost.quakecraft.objects.upgrades.Upgrade;
-import com.gmail.filoghost.quakecraft.utils.Debug;
-import com.gmail.filoghost.quakecraft.utils.Validator;
+import java.io.File;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 public class QuakePlayer extends Equippable {
 	
@@ -168,7 +163,8 @@ public class QuakePlayer extends Equippable {
 		if (!canUseVIPUpgrade(upgrade)) {
 			sendMessage("§cDevi essere VIP per usare questo oggetto.");
 			sendMessage("§cVai su §6store.WildAdventure.it §cper maggiori informazioni.");
-			EasySound.quickPlay(getBase(), Sound.BLOCK_NOTE_BASS);
+
+			EasySound.quickPlay(getBase(), Sound.BLOCK_NOTE_BLOCK_BASS);
 			return;
 		}
 		
@@ -197,7 +193,7 @@ public class QuakePlayer extends Equippable {
 		if (upgrade.getType() == UpgradeType.WEAPON && upgrade.getID() != 300) {
 			if (!ownsUpgrade(Upgrade.getByID(ID - 1))) {
 				sendMessage("§cDevi prima comprare l'arma precedente (" + Upgrade.getByID(ID - 1).getName() + ").");
-				EasySound.quickPlay(getBase(), Sound.BLOCK_NOTE_BASS);
+				EasySound.quickPlay(getBase(), Sound.BLOCK_NOTE_BLOCK_BASS);
 				return;
 			}
 		}
@@ -213,7 +209,7 @@ public class QuakePlayer extends Equippable {
 			
 			clickOwned(upgrade);
 		} else {
-			EasySound.quickPlay(getBase(), Sound.BLOCK_NOTE_BASS);
+			EasySound.quickPlay(getBase(), Sound.BLOCK_NOTE_BLOCK_BASS);
 			sendMessage(Lang.NO_MONEY);
 		}
 		
@@ -231,7 +227,7 @@ public class QuakePlayer extends Equippable {
 			getGuiByType(upgrade.getType()).open(getBase());
 			
 			sendMessage(Lang.UPGRADE_EQUIP);
-			playSound(Sound.BLOCK_NOTE_SNARE, 1.3f);
+			playSound(Sound.BLOCK_NOTE_BLOCK_SNARE, 1.3f);
 			
 		} else {
 			
@@ -241,7 +237,7 @@ public class QuakePlayer extends Equippable {
 			getGuiByType(upgrade.getType()).open(getBase());
 			
 			sendMessage(Lang.UPGRADE_UNEQUIP);
-			playSound(Sound.BLOCK_NOTE_SNARE, 0.7f);
+			playSound(Sound.BLOCK_NOTE_BLOCK_SNARE, 0.7f);
 		}
 		
 		QuakeCraft.autosaveTimer.addPlayer(this);
@@ -391,7 +387,7 @@ public class QuakePlayer extends Equippable {
 		setScore(obj, Lang.OBJECTIVE_TITLE_PREFIX + "Morti", 3);
 		setScore(obj, deaths + emptyLine(2), 2);
 		setScore(obj, emptyLine(1), 1);
-		WildConstants.Messages.displayIP(stats, obj, 0);
+		setScore(obj, "§7play.tuoserver.it", 0);
 
 		getBase().setScoreboard(stats);
 	}
@@ -401,11 +397,15 @@ public class QuakePlayer extends Equippable {
 		if (sideNumber > 15 || sideNumber < 0) return "";
 		return ChatColor.values()[sideNumber].toString();
 	}
-	
-	private static OfflinePlayer setScore(Objective obj, String fakePlayer, int score) {
-		OfflinePlayer fakeOfflinePlayer = new FakeOfflinePlayer(fakePlayer);
-		obj.getScore(fakeOfflinePlayer).setScore(score);
-		return fakeOfflinePlayer;
+
+	private static String setScore(Objective obj, String line, int score) {
+
+		while (obj.getScoreboard().getEntries().contains(line)) {
+			line += "§r";
+		}
+
+		obj.getScore(line).setScore(score);
+		return line;
 	}
 	
 	

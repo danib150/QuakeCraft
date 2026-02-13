@@ -1,12 +1,10 @@
 package com.gmail.filoghost.quakecraft.timers;
 
+import com.gmail.filoghost.quakecraft.utils.ParticleUtils;
+import com.gmail.filoghost.quakecraft.world.Particle;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffectType;
-
-import wild.api.world.Particle;
-
-import com.gmail.filoghost.quakecraft.utils.ParticleUtils;
 
 public class RespawnTimer extends TimerMaster {
 	
@@ -32,7 +30,7 @@ public class RespawnTimer extends TimerMaster {
 	//funziona finché ha resistenza (che significa protezione)
 	public void run() {
 		if (!player.isOnline()) stopTask();
-		if (!player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) stopTask();
+		if (!player.hasPotionEffect(PotionEffectType.RESISTANCE)) stopTask();
 		Location loc = player.getLocation();
 		ParticleUtils.regenEffect(loc);
 		ParticleUtils.detailedParticle(loc, Particle.SMOKE, 0.3F, 1.2F, 0.0F, 60);

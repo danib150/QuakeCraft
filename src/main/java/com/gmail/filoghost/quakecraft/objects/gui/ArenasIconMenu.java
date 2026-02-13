@@ -1,10 +1,10 @@
 package com.gmail.filoghost.quakecraft.objects.gui;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
+import com.gmail.filoghost.quakecraft.QuakeCraft;
+import com.gmail.filoghost.quakecraft.enums.ArenaType;
+import com.gmail.filoghost.quakecraft.enums.StainedClayColor;
+import com.gmail.filoghost.quakecraft.objects.arenas.Arena;
+import com.gmail.filoghost.quakecraft.utils.ItemBuilder;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Material;
@@ -13,12 +13,10 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-import wild.api.item.ItemBuilder;
-
-import com.gmail.filoghost.quakecraft.QuakeCraft;
-import com.gmail.filoghost.quakecraft.enums.ArenaType;
-import com.gmail.filoghost.quakecraft.enums.StainedClayColor;
-import com.gmail.filoghost.quakecraft.objects.arenas.Arena;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class ArenasIconMenu implements AbstractMenu {
     
@@ -30,7 +28,7 @@ public class ArenasIconMenu implements AbstractMenu {
 	
     public ArenasIconMenu(String menuName) {
     	this.menuName = menuName;
-    	infoItem = ItemBuilder.of(Material.BOOK_AND_QUILL).name("§d§lArene disponibili")
+    	infoItem = ItemBuilder.of(Material.WRITABLE_BOOK).name("§d§lArene disponibili")
     													.lore("§7Passa sopra i blocchi per visualizzare il nome",
     														  "§7delle arene e i dettagli. Le arene evidenziate",
     														  "§7sono quelle che devono ancora iniziare, e",
@@ -41,7 +39,7 @@ public class ArenasIconMenu implements AbstractMenu {
     }
     
     private static ItemStack getItemStack(Arena arena) {
-    	ItemStack item = new ItemStack(Material.STAINED_CLAY);
+    	ItemStack item = new ItemStack(Material.RED_TERRACOTTA);
     	
     	StainedClayColor color = StainedClayColor.GREEN; //default
     	

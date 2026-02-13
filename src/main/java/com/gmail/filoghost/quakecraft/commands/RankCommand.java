@@ -1,17 +1,17 @@
 package com.gmail.filoghost.quakecraft.commands;
 
-import java.util.Set;
-
+import com.gmail.filoghost.quakecraft.Configuration;
+import com.gmail.filoghost.quakecraft.QuakeCraft;
+import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.filoghost.quakecraft.Configuration;
-import com.gmail.filoghost.quakecraft.QuakeCraft;
-import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
+import java.util.Set;
 
 public class RankCommand implements CommandExecutor {
 
@@ -33,7 +33,7 @@ public class RankCommand implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("killer-head")) {
 			Parser.argumentLength(args, 2, "Utilizzo corretto: /" + label + " killer-head <1 | 2 | 3>");
 			Block block = player.getTargetBlock((Set<Material>) null, 64);
-			Parser.isTrue(block.getType() == Material.SKULL, "Non stai guardando una testa.");
+			Parser.isTrue(block.getType() == Material.PLAYER_HEAD, "Non stai guardando una testa.");
 			
 			if (args[1].equalsIgnoreCase("1")) {
 				Configuration.saveBlock(QuakeCraft.plugin.getConfig(), ConfigNodes.FIRST_KILLER_HEAD, block);
@@ -53,7 +53,7 @@ public class RankCommand implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("killer-sign")) {
 			Parser.argumentLength(args, 2, "Utilizzo corretto: /" + label + " killer-sign <1 | 2 | 3>");
 			Block block = player.getTargetBlock((Set<Material>) null, 64);
-			Parser.isTrue(block.getType() == Material.WALL_SIGN, "Non stai guardando un cartello a muro.");
+			Parser.isTrue(block.getState() instanceof Sign, "Non stai guardando un cartello a muro.");
 			
 			if (args[1].equalsIgnoreCase("1")) {
 				Configuration.saveBlock(QuakeCraft.plugin.getConfig(), ConfigNodes.FIRST_KILLER_SIGN, block);
@@ -73,8 +73,8 @@ public class RankCommand implements CommandExecutor {
 		
 		if (args[0].equalsIgnoreCase("winner-head")) {
 			Parser.argumentLength(args, 2, "Utilizzo corretto: /" + label + " winner-head <1 | 2 | 3>");
-			Block block = player.getTargetBlock((Set<Material>) null, 64);
-			Parser.isTrue(block.getType() == Material.SKULL, "Non stai guardando una testa.");
+			Block block = player.getTargetBlock(null, 64);
+			Parser.isTrue(block.getType() == Material.PLAYER_HEAD, "Non stai guardando una testa.");
 			
 			if (args[1].equalsIgnoreCase("1")) {
 				Configuration.saveBlock(QuakeCraft.plugin.getConfig(), ConfigNodes.FIRST_WINNER_HEAD, block);
@@ -93,8 +93,8 @@ public class RankCommand implements CommandExecutor {
 		
 		if (args[0].equalsIgnoreCase("winner-sign")) {
 			Parser.argumentLength(args, 2, "Utilizzo corretto: /" + label + " winner-sign <1 | 2 | 3>");
-			Block block = player.getTargetBlock((Set<Material>) null, 64);
-			Parser.isTrue(block.getType() == Material.WALL_SIGN, "Non stai guardando un cartello a muro.");
+			Block block = player.getTargetBlock(null, 64);
+			Parser.isTrue(block.getType() == Material.PLAYER_HEAD, "Non stai guardando un cartello a muro.");
 			
 			if (args[1].equalsIgnoreCase("1")) {
 				Configuration.saveBlock(QuakeCraft.plugin.getConfig(), ConfigNodes.FIRST_WINNER_SIGN, block);

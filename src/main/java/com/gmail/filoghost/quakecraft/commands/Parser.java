@@ -1,14 +1,13 @@
 package com.gmail.filoghost.quakecraft.commands;
 
-import java.util.List;
-
+import com.gmail.filoghost.quakecraft.constants.Lang;
 import org.bukkit.Bukkit;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
+import org.bukkit.block.data.type.WallSign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-import com.gmail.filoghost.quakecraft.constants.Lang;
+import java.util.List;
 
 public class Parser {
 	
@@ -95,10 +94,10 @@ public class Parser {
 	}
 	
 	public static void isWallSign(Block block, String message) throws ArgumentException {
-		if (block.getType() != Material.WALL_SIGN) {
+        if (!(block.getState() instanceof WallSign)) {
 			throw new ArgumentException(message);
-		}
-	}
+        }
+    }
 	
 	public static void isPlayer(CommandSender sender) throws ArgumentException {
 		if (!(sender instanceof Player)) {

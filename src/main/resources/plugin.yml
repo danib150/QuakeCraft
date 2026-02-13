@@ -2,7 +2,7 @@ name: QuakeCraft
 main: com.gmail.filoghost.quakecraft.QuakeCraft
 version: 1.0
 
-softdepend: [WildCommons, HolographicDisplays]
+softdepend: [DecentHolograms]
 
 commands:
   quake:

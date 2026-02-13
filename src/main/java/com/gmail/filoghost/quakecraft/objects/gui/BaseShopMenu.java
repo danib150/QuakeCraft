@@ -1,19 +1,16 @@
 package com.gmail.filoghost.quakecraft.objects.gui;
 
-import java.util.List;
-
+import com.gmail.filoghost.quakecraft.enums.Gui;
+import com.gmail.filoghost.quakecraft.objects.player.QuakePlayer;
+import com.gmail.filoghost.quakecraft.utils.ItemBuilder;
+import com.gmail.filoghost.quakecraft.utils.Utils;
 import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import wild.api.WildCommons;
-import wild.api.item.ItemBuilder;
-
-import com.gmail.filoghost.quakecraft.enums.Gui;
-import com.gmail.filoghost.quakecraft.objects.player.QuakePlayer;
-import com.gmail.filoghost.quakecraft.utils.Utils;
+import java.util.List;
 
 
 public class BaseShopMenu implements AbstractMenu {
@@ -61,13 +58,13 @@ public class BaseShopMenu implements AbstractMenu {
     	}
     	
     	
-    	inventory.setItem(12, WildCommons.removeAttributes(ItemBuilder.of(Material.LEATHER_HELMET).name(HAT_MENU_ICON_NAME).lore(hatLore).build()));
-    	inventory.setItem(20, WildCommons.removeAttributes(ItemBuilder.of(Material.WOOD_HOE).name(WEAPON_MENU_ICON_NAME).lore(weaponLore).build()));
-    	inventory.setItem(21, WildCommons.removeAttributes(ItemBuilder.of(Material.LEATHER_CHESTPLATE).name(ARMOR_MENU_ICON_NAME).lore(armorLore).build()));
-    	inventory.setItem(23, ItemBuilder.of(Material.INK_SACK).durability((short) 10).name(TRAIL_MENU_ICON_NAME).lore(trailLore).build());
-    	inventory.setItem(24, ItemBuilder.of(Material.FIREWORK).name(EXPLOSION_MENU_ICON_NAME).lore(explosionLore).build());
+    	inventory.setItem(12, ItemBuilder.of(Material.LEATHER_HELMET).name(HAT_MENU_ICON_NAME).removeAttributes().lore(hatLore).build());
+    	inventory.setItem(20, ItemBuilder.of(Material.WOODEN_HOE).name(WEAPON_MENU_ICON_NAME).removeAttributes().lore(weaponLore).build());
+    	inventory.setItem(21, ItemBuilder.of(Material.LEATHER_CHESTPLATE).name(ARMOR_MENU_ICON_NAME).removeAttributes().lore(armorLore).build());
+    	inventory.setItem(23, ItemBuilder.of(Material.INK_SAC).durability((short) 10).name(TRAIL_MENU_ICON_NAME).removeAttributes().lore(trailLore).build());
+    	inventory.setItem(24, ItemBuilder.of(Material.FIREWORK_ROCKET).name(EXPLOSION_MENU_ICON_NAME).lore(explosionLore).build());
     	
-    	 inventory.setItem(36, ItemBuilder.of(Material.SKULL_ITEM).durability(3).name("§a§lIl tuo profilo").lore(
+    	 inventory.setItem(36, ItemBuilder.of(Material.PLAYER_HEAD).durability(3).name("§a§lIl tuo profilo").lore(
     			 "§fArma: §7" + (quakePlayer.getWeapon() != null ? quakePlayer.getWeapon().getName() : "-"),
     			 "§fElmo: §7" + (quakePlayer.getHat() != null ? quakePlayer.getHat().getName() : "-"),
     			 "§fArmatura: §7" + (quakePlayer.getArmor() != null ? quakePlayer.getArmor().getName() : "-"),
@@ -80,7 +77,7 @@ public class BaseShopMenu implements AbstractMenu {
     	 ).build());
     	 
         inventory.setItem(43, ItemBuilder.of(Material.EMERALD).name("§a§l" + quakePlayer.getCoins() + " Coins").lore("Uccisione = 1 Coin", "Vittoria = 10 Coins").build());
-        inventory.setItem(44, ItemBuilder.of(Material.BOOK_AND_QUILL).name("§a§lInformazioni").lore("Passa con il mouse su un oggetto per leggere",
+        inventory.setItem(44, ItemBuilder.of(Material.WRITABLE_BOOK).name("§a§lInformazioni").lore("Passa con il mouse su un oggetto per leggere",
         																					  "la descrizione. Clicca sui vari oggetti per",
         																					  "aprire dei menù secondari. In questi menù",
         																					  "secondari puoi acquistare o equipaggiare",

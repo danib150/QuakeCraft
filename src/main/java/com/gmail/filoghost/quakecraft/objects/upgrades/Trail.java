@@ -1,10 +1,8 @@
 package com.gmail.filoghost.quakecraft.objects.upgrades;
 
-import org.bukkit.inventory.ItemStack;
-
-import wild.api.world.Particle;
-
 import com.gmail.filoghost.quakecraft.enums.UpgradeType;
+import com.gmail.filoghost.quakecraft.world.Particle;
+import org.bukkit.inventory.ItemStack;
 
 public class Trail extends Upgrade {
 

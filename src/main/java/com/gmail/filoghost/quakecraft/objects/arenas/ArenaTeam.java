@@ -1,24 +1,5 @@
 package com.gmail.filoghost.quakecraft.objects.arenas;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Sound;
-import org.bukkit.command.CommandSender;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
-import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scheduler.BukkitScheduler;
-
-import wild.api.WildCommons;
-import wild.api.bridges.BoostersBridge;
-import wild.api.bridges.BoostersBridge.Booster;
-import wild.api.world.RayTrace;
-import wild.api.world.SightInfo;
-
 import com.gmail.filoghost.quakecraft.QuakeCraft;
 import com.gmail.filoghost.quakecraft.constants.Items;
 import com.gmail.filoghost.quakecraft.constants.Lang;
@@ -34,6 +15,20 @@ import com.gmail.filoghost.quakecraft.runnables.FireworksTask;
 import com.gmail.filoghost.quakecraft.utils.Debug;
 import com.gmail.filoghost.quakecraft.utils.ParticleUtils;
 import com.gmail.filoghost.quakecraft.utils.Utils;
+import com.gmail.filoghost.quakecraft.world.RayTrace;
+import com.gmail.filoghost.quakecraft.world.SightInfo;
+import org.bukkit.Bukkit;
+import org.bukkit.Sound;
+import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.PlayerInventory;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scheduler.BukkitScheduler;
+
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class ArenaTeam extends Arena {
@@ -58,14 +53,14 @@ public class ArenaTeam extends Arena {
 		
 		ParticleUtils.trail(shooter.getTrail().getParticle(), shooter.getBase().getEyeLocation(), target.getLocation());
 		
-		List<Player> affectedPlayers = new ArrayList<Player>();
+		List<Player> affectedPlayers = new ArrayList<>();
 		
 		//magari non l'ha preso in pieno
-		if (target.getPlayer() != null && !target.getPlayer().isDead() && teamManager.areEnemy(target.getPlayer(), shooter.getBase())) {
+		if (target.getPlayer() != null && !target.getPlayer().isDead() && teamManager.areEnemies(target.getPlayer(), shooter.getBase())) {
 			//pareggia il livello per le multikill
 			y = target.getPlayer().getLocation().getY();
 			
-			if (target.getPlayer().hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+			if (target.getPlayer().hasPotionEffect(PotionEffectType.RESISTANCE)) {
 				shooter.getBase().sendMessage(Lang.ARENA_PLAYER_PROTECTED);
 			} else {
 				affectedPlayers.add(target.getPlayer());
@@ -73,9 +68,9 @@ public class ArenaTeam extends Arena {
 		}
 		
 		for (Player gamer : gamers) {
-			if (gamer != shooter.getBase() && gamer != target.getPlayer() && teamManager.areEnemy(shooter.getBase(), gamer) && !gamer.isDead() && Utils.isInCylinder(gamer, x, y, z)) {
+			if (gamer != shooter.getBase() && gamer != target.getPlayer() && teamManager.areEnemies(shooter.getBase(), gamer) && !gamer.isDead() && Utils.isInCylinder(gamer, x, y, z)) {
 				
-				if (gamer.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+				if (gamer.hasPotionEffect(PotionEffectType.RESISTANCE)) {
 					shooter.sendMessage(Lang.ARENA_PLAYER_PROTECTED);
 				} else {
 					affectedPlayers.add(gamer);
@@ -100,12 +95,15 @@ public class ArenaTeam extends Arena {
 				} else {
 					tellAll("§b" + shooter.getName() + " ha fatto una Uccisione Multipla (" + amount + ")!");
 				}
-				
+				/*
 				Booster booster = BoostersBridge.getActiveBooster(QuakeCraft.PLUGIN_ID);
 				int extraCoins = BoostersBridge.applyMultiplier(amount, booster);
-				
 				shooter.addCoins(extraCoins);
+				//TODO Add vault impl
 				shooter.sendMessage("§3§o+" + amount + " Coins extra" + (BoostersBridge.messageSuffix(booster)));
+
+				 */
+				
 			}
 		
 		} else {
@@ -142,14 +140,14 @@ public class ArenaTeam extends Arena {
 		victim.setHealth(0.0);
 		Bukkit.getScheduler().runTaskLater(QuakeCraft.plugin, () -> {
 			if (victim.isOnline()) {
-				WildCommons.respawn(victim);
+				victim.spigot().respawn();
 			}
 		}, 20L);
 		
 		addDeath(victim);
 		teamManager.addKill(killer);
 		
-		if (teamManager.getKills(teamManager.getTeamColor(killer)) >= getMaxKills()) {
+		if (teamManager.getTeamKills(teamManager.getTeamColor(killer)) >= getMaxKills()) {
 			end(killer); //vince il team del killer
 		}
 	}
@@ -241,8 +239,8 @@ public class ArenaTeam extends Arena {
 			return;
 			//nessun team aveva ancora vinto, ricompense normali
 		}
-		
-		Booster booster = BoostersBridge.getActiveBooster(QuakeCraft.PLUGIN_ID);
+		//Todo add vault impl
+		//Booster booster = BoostersBridge.getActiveBooster(QuakeCraft.PLUGIN_ID);
 		TeamColor winnerTeam = teamManager.getTeamColor(winner);
 		
 		for (Player player : gamers) {
@@ -262,10 +260,10 @@ public class ArenaTeam extends Arena {
 				coins = coins * 2;
 			}
 			
-			coins = BoostersBridge.applyMultiplier(coins, booster);
+			//coins = BoostersBridge.applyMultiplier(coins, booster);
 			
 			quakePlayer.addCoins(coins);
-			quakePlayer.sendMessage("§3§o+" + coins + " Coins" + (BoostersBridge.messageSuffix(booster)));
+			//quakePlayer.sendMessage("§3§o+" + coins + " Coins" + (BoostersBridge.messageSuffix(booster)));
 			quakePlayer.addKills(kills);
 			quakePlayer.addDeaths(getDeaths(player));
 			
@@ -316,6 +314,6 @@ public class ArenaTeam extends Arena {
 
 	@Override
 	public int getKills(Player player) {
-		return teamManager.getSingularKills(player);
+		return teamManager.getPersonalKills(player);
 	}
 }

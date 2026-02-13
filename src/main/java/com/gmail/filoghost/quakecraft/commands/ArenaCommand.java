@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import org.apache.commons.lang.WordUtils;
+import com.gmail.filoghost.quakecraft.utils.WorldUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -64,8 +64,9 @@ public class ArenaCommand implements CommandExecutor {
 			try {
 				creatingArenaFile = new File(QuakeCraft.plugin.getDataFolder(), Lang.ARENAS_FOLDER + File.separator + args[1].toLowerCase() + ".yml");
 				creatingArena = makeDefault();
-				creatingArena.set(ConfigNodes.NAME, WordUtils.capitalize(args[1]));
-				player.sendMessage("§aInizio fase di creazione per l'arena \"" + WordUtils.capitalize(args[1]) + "\".");
+				String arenaName = WorldUtils.capitalize(args[1]);
+				creatingArena.set(ConfigNodes.NAME, arenaName);
+				player.sendMessage("§aInizio fase di creazione per l'arena \"" + arenaName + "\".");
 				player.sendMessage("§eProcedi con /arena setplayers <min> <max>.");
 			} catch (Exception ex) {
 				ex.printStackTrace();
@@ -303,7 +304,8 @@ public class ArenaCommand implements CommandExecutor {
 		sender.sendMessage(ex.getMessage());
 		return true;
 	}}
-	
+
+
 	private static FileConfiguration makeDefault() {
 		YamlConfiguration config = new YamlConfiguration();
 		config.set(ConfigNodes.NAME, "");

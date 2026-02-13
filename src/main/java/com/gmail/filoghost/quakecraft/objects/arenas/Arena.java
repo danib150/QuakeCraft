@@ -1,15 +1,27 @@
 package com.gmail.filoghost.quakecraft.objects.arenas;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-
+import com.gmail.filoghost.quakecraft.Configuration;
+import com.gmail.filoghost.quakecraft.QuakeCraft;
+import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
+import com.gmail.filoghost.quakecraft.constants.Lang;
+import com.gmail.filoghost.quakecraft.constants.Numbers;
+import com.gmail.filoghost.quakecraft.constants.Permissions;
+import com.gmail.filoghost.quakecraft.enums.ArenaType;
+import com.gmail.filoghost.quakecraft.enums.GameState;
+import com.gmail.filoghost.quakecraft.objects.*;
+import com.gmail.filoghost.quakecraft.objects.player.QuakePlayer;
+import com.gmail.filoghost.quakecraft.runnables.FireworksTask;
+import com.gmail.filoghost.quakecraft.runnables.SpeedAndResistancePotionTask;
+import com.gmail.filoghost.quakecraft.timers.Cooldown;
+import com.gmail.filoghost.quakecraft.timers.GameTimer;
+import com.gmail.filoghost.quakecraft.timers.PowerUpTimer;
+import com.gmail.filoghost.quakecraft.timers.RespawnTimer;
+import com.gmail.filoghost.quakecraft.utils.*;
+import com.gmail.filoghost.quakecraft.world.RayTrace;
+import com.gmail.filoghost.quakecraft.world.SightInfo;
+import com.google.common.collect.Lists;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
@@ -28,40 +40,7 @@ import org.bukkit.scoreboard.Objective;
 import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 
-import wild.api.WildConstants;
-import wild.api.bridges.BoostersBridge;
-import wild.api.bridges.BoostersBridge.Booster;
-import wild.api.bridges.CosmeticsBridge;
-import wild.api.bridges.CosmeticsBridge.Status;
-import wild.api.world.RayTrace;
-import wild.api.world.SightInfo;
-
-import com.gmail.filoghost.quakecraft.Configuration;
-import com.gmail.filoghost.quakecraft.QuakeCraft;
-import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
-import com.gmail.filoghost.quakecraft.constants.Lang;
-import com.gmail.filoghost.quakecraft.constants.Numbers;
-import com.gmail.filoghost.quakecraft.constants.Permissions;
-import com.gmail.filoghost.quakecraft.enums.ArenaType;
-import com.gmail.filoghost.quakecraft.enums.GameState;
-import com.gmail.filoghost.quakecraft.objects.CyclicIterator;
-import com.gmail.filoghost.quakecraft.objects.KillStreak;
-import com.gmail.filoghost.quakecraft.objects.PowerUp;
-import com.gmail.filoghost.quakecraft.objects.PowerUpEffect;
-import com.gmail.filoghost.quakecraft.objects.SpawnPoint;
-import com.gmail.filoghost.quakecraft.objects.player.QuakePlayer;
-import com.gmail.filoghost.quakecraft.runnables.FireworksTask;
-import com.gmail.filoghost.quakecraft.runnables.SpeedAndResistancePotionTask;
-import com.gmail.filoghost.quakecraft.timers.Cooldown;
-import com.gmail.filoghost.quakecraft.timers.GameTimer;
-import com.gmail.filoghost.quakecraft.timers.PowerUpTimer;
-import com.gmail.filoghost.quakecraft.timers.RespawnTimer;
-import com.gmail.filoghost.quakecraft.utils.Debug;
-import com.gmail.filoghost.quakecraft.utils.LogFile;
-import com.gmail.filoghost.quakecraft.utils.ParticleUtils;
-import com.gmail.filoghost.quakecraft.utils.PotionUtils;
-import com.gmail.filoghost.quakecraft.utils.Utils;
-import com.google.common.collect.Lists;
+import java.util.*;
 
 public class Arena {
 	
@@ -117,7 +96,7 @@ public class Arena {
 										config.getInt(ConfigNodes.SIGN_Z));
 		
 		Block block = signLoc.getBlock();
-		if (block.getType() == Material.WALL_SIGN) {
+		if (block.getState() instanceof Sign) {
 			signBlock = block;
 		} else {
 			sender.sendMessage("§c" + name + ": il blocco non è un cartello da muro!");
@@ -271,7 +250,7 @@ public class Arena {
 		gamers.add(player);
 		Utils.clearPlayer(player);
 		player.updateInventory();
-		CosmeticsBridge.updateCosmetics(player, Status.GAME);
+		//CosmeticsBridge.updateCosmetics(player, Status.GAME);
 		
 		if (isNight) {
 			Utils.setNight(player);
@@ -367,7 +346,7 @@ public class Arena {
 		int cooldown;
 		
 		switch (item.getType()) {
-			case WOOD_HOE:
+			case WOODEN_HOE:
 				cooldown = 30;
 				break;
 			case STONE_HOE:
@@ -376,11 +355,11 @@ public class Arena {
 			case IRON_HOE:
 				cooldown = 26;
 				break;
-			case GOLD_HOE:
+			case GOLDEN_HOE:
 				cooldown = 24;
 				break;
 			case DIAMOND_HOE:
-				if (item.containsEnchantment(Enchantment.DAMAGE_ALL)) {
+				if (item.containsEnchantment(Enchantment.SHARPNESS)) {
 					cooldown = 20;
 				} else {
 					cooldown = 22;
@@ -390,7 +369,7 @@ public class Arena {
 				return 0;
 		}
 		
-		if (player.hasPotionEffect(PotionEffectType.FAST_DIGGING)) {
+		if (player.hasPotionEffect(PotionEffectType.HASTE)) {
 			cooldown = cooldown / 2;
 		}
 		
@@ -399,7 +378,7 @@ public class Arena {
 	
 	public void rightClickEvent(Player player, ItemStack item) {
 		
-		if (player.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) return;
+		if (player.hasPotionEffect(PotionEffectType.RESISTANCE)) return;
 		
 		if (!Cooldown.canShot(player)) return;
 		
@@ -429,7 +408,7 @@ public class Arena {
 			//pareggia il livello per le multikill
 			y = target.getPlayer().getLocation().getY();
 			
-			if (target.getPlayer().hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+			if (target.getPlayer().hasPotionEffect(PotionEffectType.RESISTANCE)) {
 				shooter.sendMessage(Lang.ARENA_PLAYER_PROTECTED);
 			} else {
 				affectedPlayers.add(target.getPlayer());
@@ -439,7 +418,7 @@ public class Arena {
 		for (Player gamer : gamers) {
 			if (gamer != shooter.getBase() && gamer != target.getPlayer() && !gamer.isDead() && Utils.isInCylinder(gamer, x, y, z)) {
 				
-				if (gamer.hasPotionEffect(PotionEffectType.DAMAGE_RESISTANCE)) {
+				if (gamer.hasPotionEffect(PotionEffectType.RESISTANCE)) {
 					shooter.sendMessage(Lang.ARENA_PLAYER_PROTECTED);
 				} else {
 					affectedPlayers.add(gamer);
@@ -464,12 +443,15 @@ public class Arena {
 				} else {
 					tellAll("§b" + shooter.getName() + " ha fatto una Uccisione Multipla (" + amount + ")!");
 				}
-				
+				/*
 				Booster booster = BoostersBridge.getActiveBooster(QuakeCraft.PLUGIN_ID);
 				int extraCoins = BoostersBridge.applyMultiplier(amount, booster);
-				
 				shooter.addCoins(extraCoins);
 				shooter.sendMessage("§3§o+" + amount + " Coins extra" + (BoostersBridge.messageSuffix(booster)));
+				TODO add vault impl
+				 */
+				
+
 			}
 		
 		} else {
@@ -584,7 +566,7 @@ public class Arena {
 		}
 		
 		sidebar.getScore("§r§r§r").setScore(-1);
-		WildConstants.Messages.displayIP(scoreboard, sidebar, -2);
+		sidebar.getScore("§7play.mioserver.it").setScore(-2);
 	}
 	
 	public void end(Player winner) {
@@ -609,17 +591,15 @@ public class Arena {
 			Bukkit.broadcastMessage(Lang.QUAKE_PREFIX + "§f" + winner.getName() + " ha vinto nell'arena " + name);
 			
 			for (Player player : gamers) {
-				player.sendMessage(new String[] {
-						"",
-						Lang.GRAY_LINE_SEPARATOR,
-						"§6§lVincitore:§f " + winner.getName(),
-						"",
-						"§a§lUccisioni:§f " + getKills(player),
-						"§a§lMorti:§f " + getDeaths(player),
-						"§a§lMappa:§f " + name,
-						Lang.GRAY_LINE_SEPARATOR,
-						""
-				});
+				player.sendMessage("",
+                        Lang.GRAY_LINE_SEPARATOR,
+                        "§6§lVincitore:§f " + winner.getName(),
+                        "",
+                        "§a§lUccisioni:§f " + getKills(player),
+                        "§a§lMorti:§f " + getDeaths(player),
+                        "§a§lMappa:§f " + name,
+                        Lang.GRAY_LINE_SEPARATOR,
+                        "");
 			}
 			
 	
@@ -655,7 +635,7 @@ public class Arena {
 	}
 	
 	public void giveRewards(Player winner, boolean syncro) {
-		Booster booster = BoostersBridge.getActiveBooster(QuakeCraft.PLUGIN_ID);
+		//Booster booster = BoostersBridge.getActiveBooster(QuakeCraft.PLUGIN_ID);
 		
 		for (Player player : gamers) {
 				
@@ -673,11 +653,11 @@ public class Arena {
 			} else if (player.hasPermission(Permissions.BOOST_200)) {
 				coins = coins * 2;
 			}
-			
-			coins = BoostersBridge.applyMultiplier(coins, booster);
+			//Vault impl
+			//coins = BoostersBridge.applyMultiplier(coins, booster);
 			
 			quakePlayer.addCoins(coins);
-			quakePlayer.sendMessage("§3§o+" + coins + " Coins" + (BoostersBridge.messageSuffix(booster)));
+			//quakePlayer.sendMessage("§3§o+" + coins + " Coins" + (BoostersBridge.messageSuffix(booster))); BOOSTER Vault IMPL
 			quakePlayer.addKills(kills);
 			quakePlayer.addDeaths(getDeaths(player));
 			

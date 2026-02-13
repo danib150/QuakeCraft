@@ -1,14 +1,5 @@
 package com.gmail.filoghost.quakecraft.objects;
 
-import java.util.Random;
-
-import org.bukkit.Bukkit;
-import org.bukkit.Material;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import org.bukkit.potion.PotionEffect;
-import org.bukkit.potion.PotionEffectType;
-
 import com.gmail.filoghost.quakecraft.QuakeCraft;
 import com.gmail.filoghost.quakecraft.enums.ArenaType;
 import com.gmail.filoghost.quakecraft.objects.arenas.Arena;
@@ -16,14 +7,22 @@ import com.gmail.filoghost.quakecraft.objects.arenas.ArenaTeam;
 import com.gmail.filoghost.quakecraft.runnables.GiveArmorAndHatTask;
 import com.gmail.filoghost.quakecraft.utils.PotionUtils;
 import com.gmail.filoghost.quakecraft.utils.Utils;
+import org.bukkit.Bukkit;
+import org.bukkit.Material;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+
+import java.util.Random;
 
 public enum PowerUpEffect {
 	
-	SPEED ("Velocità", new ItemStack(Material.GOLD_BOOTS)) {
+	SPEED ("Velocità", new ItemStack(Material.GOLDEN_BOOTS)) {
 		
 		public void apply(Player player, Arena arena) {
 			player.sendMessage("§7§oHai ottenuto Velocità IV.");
-			player.removePotionEffect(PotionEffectType.SLOW);
+			player.removePotionEffect(PotionEffectType.SLOWNESS);
 			player.addPotionEffect(new PotionEffect(PotionEffectType.SPEED, 30 * 20, 3), true);
 			
 			final String playerName = player.getName();
@@ -32,7 +31,7 @@ public enum PowerUpEffect {
 				public void run() {
 					Player player = Bukkit.getPlayerExact(playerName);
 					if (player != null && !player.isDead() && QuakeCraft.isPlaying(player)) {
-						if (!player.hasPotionEffect(PotionEffectType.SLOW)) {
+						if (!player.hasPotionEffect(PotionEffectType.SLOWNESS)) {
 							player.removePotionEffect(PotionEffectType.SPEED);
 							PotionUtils.giveSpeed(player, 1);
 						}
@@ -48,7 +47,7 @@ public enum PowerUpEffect {
 		@Override
 		public void apply(Player player, Arena arena) {
 			player.sendMessage("§7§oHai ottenuto Salto potenziato II.");
-			player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP, 45 * 20, 1), true);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.JUMP_BOOST, 45 * 20, 1), true);
 		}
 		
 	},
@@ -58,13 +57,13 @@ public enum PowerUpEffect {
 		public void apply(Player player, Arena arena) {
 			player.sendMessage("§7§oHai confuso i tuoi avversari.");
 			if (arena.getType() == ArenaType.TEAM) {
-				for (Player gamer : ((ArenaTeam) arena).teamManager.getEnemies(player)) {
-					gamer.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 20, 0), true);
+				for (Player gamer : ((ArenaTeam) arena).teamManager.getEnemies(player, arena.getGamers())) {
+					gamer.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 20 * 20, 0), true);
 				}
 			} else {
 				for (Player gamer : arena.gamers) {
 					if (gamer != player) {
-						gamer.addPotionEffect(new PotionEffect(PotionEffectType.CONFUSION, 20 * 20, 0), true);
+						gamer.addPotionEffect(new PotionEffect(PotionEffectType.NAUSEA, 20 * 20, 0), true);
 					}
 				}
 			}
@@ -72,13 +71,13 @@ public enum PowerUpEffect {
 	},
 	
 	
-	BLINDNESS_TO_OPPONENTS("Cecità", new ItemStack(Material.EYE_OF_ENDER)) {
+	BLINDNESS_TO_OPPONENTS("Cecità", new ItemStack(Material.ENDER_EYE)) {
 		
 		public void apply(Player player, Arena arena) {
 			player.sendMessage("§7§oHai accecato i tuoi avversari.");
 			
 			if (arena.getType() == ArenaType.TEAM) {
-				for (Player gamer : ((ArenaTeam) arena).teamManager.getEnemies(player)) {
+				for (Player gamer : ((ArenaTeam) arena).teamManager.getEnemies(player, arena.getGamers())) {
 					gamer.addPotionEffect(new PotionEffect(PotionEffectType.BLINDNESS, 10 * 20, 0), true);
 				}
 			} else {
@@ -97,22 +96,22 @@ public enum PowerUpEffect {
 		public void apply(Player player, Arena arena) {
 			player.sendMessage("§7§oHai rallentato i tuoi avversari.");
 			if (arena.getType() == ArenaType.TEAM) {
-				for (Player gamer : ((ArenaTeam) arena).teamManager.getEnemies(player)) {
+				for (Player gamer : ((ArenaTeam) arena).teamManager.getEnemies(player, arena.getGamers())) {
 					gamer.removePotionEffect(PotionEffectType.SPEED);
-					gamer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0), false);
+					gamer.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, Integer.MAX_VALUE, 0), false);
 				}
 			} else {
 				for (Player gamer : arena.gamers) {
 					if (gamer != player) {
 						gamer.removePotionEffect(PotionEffectType.SPEED);
-						gamer.addPotionEffect(new PotionEffect(PotionEffectType.SLOW, Integer.MAX_VALUE, 0), false);
+						gamer.addPotionEffect(new PotionEffect(PotionEffectType.SLOWNESS, Integer.MAX_VALUE, 0), false);
 					}
 				}
 			}
 		}
 	},
 	
-	INVISIBILITY("Invisibilità", new ItemStack(Material.THIN_GLASS)) {
+	INVISIBILITY("Invisibilità", new ItemStack(Material.GLASS_PANE)) {
 		
 		public void apply(Player player, Arena arena) {
 			if (Utils.hasPieceOfArmor(player)) {
@@ -131,7 +130,7 @@ public enum PowerUpEffect {
 		
 		public void apply(Player player, Arena arena) {
 			player.sendMessage("§7§oLa tua arma spara due volte più veloce per 10 secondi.");
-			player.addPotionEffect(new PotionEffect(PotionEffectType.FAST_DIGGING, 10 * 20, 0), true);
+			player.addPotionEffect(new PotionEffect(PotionEffectType.HASTE, 10 * 20, 0), true);
 		}
 	};
 	

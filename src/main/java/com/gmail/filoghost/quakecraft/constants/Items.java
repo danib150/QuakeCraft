@@ -17,8 +17,8 @@ public class Items {
 	public static ItemStack BLUE_LEGGINGS = getColoredArmor(Material.LEATHER_LEGGINGS, Color.BLUE);
 	public static ItemStack BLUE_BOOTS = getColoredArmor(Material.LEATHER_BOOTS, Color.BLUE);
 	
-	public static ItemStack RED_WOOL = new ItemStack(Material.WOOL, 1, (short) 14);
-	public static ItemStack BLUE_WOOL = new ItemStack(Material.WOOL, 1, (short) 11);
+	public static ItemStack RED_WOOL = new ItemStack(Material.RED_WOOL, 1, (short) 14);
+	public static ItemStack BLUE_WOOL = new ItemStack(Material.BLUE_WOOL, 1, (short) 11);
 	
 	
 	private static ItemStack getColoredArmor(Material mat, Color color) {

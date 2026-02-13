@@ -28,10 +28,6 @@ import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.scoreboard.Scoreboard;
 
-import wild.api.WildCommons;
-import wild.api.bridges.CosmeticsBridge;
-import wild.api.bridges.CosmeticsBridge.Status;
-import wild.api.item.ItemBuilder;
 
 import com.gmail.filoghost.quakecraft.Configuration;
 import com.gmail.filoghost.quakecraft.QuakeCraft;
@@ -54,7 +50,7 @@ public class Utils {
 					.lore("§7Per aprire fai click con mouse destro", "§7mentre tieni l'oggetto in mano.")
 					.build(),
 					
-			blazeRod = ItemBuilder.of(Material.WOOD_PICKAXE)
+			blazeRod = ItemBuilder.of(Material.WOODEN_PICKAXE)
 					.name("§aMitragliatrice")
 					.build(),
 	
@@ -151,7 +147,7 @@ public class Utils {
 		if (player.getGameMode() != GameMode.SURVIVAL) {
 			player.setGameMode(GameMode.SURVIVAL);
 		}
-		WildCommons.clearInventoryFully(player);
+		PlayerUtils.clearInventoryFully(player);
 		player.setHealth(20.0);
 		player.setFoodLevel(20);
 		player.setSaturation(20F);
@@ -171,8 +167,7 @@ public class Utils {
 		
 		clearPlayer(player.getBase());
 		giveLobbyStuff(player);
-		CosmeticsBridge.updateCosmetics(player.getBase(), Status.LOBBY);
-		
+
 		player.getBase().resetPlayerTime();
 		player.getBase().teleport(Configuration.lobby);
 		PotionUtils.giveSpeed(player.getBase(), 0);
@@ -193,8 +188,7 @@ public class Utils {
 		inv.setItem(0, book);
 		inv.setItem(1, shop);
 		inv.setItem(2, arenaNavigator);
-		CosmeticsBridge.giveCosmeticsItems(inv);
-		
+
 		player.wearHat();
 		player.wearArmor();
 	}

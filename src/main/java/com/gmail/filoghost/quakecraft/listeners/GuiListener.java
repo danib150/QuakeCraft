@@ -12,6 +12,7 @@ import org.bukkit.inventory.Inventory;
 import com.gmail.filoghost.quakecraft.QuakeCraft;
 import com.gmail.filoghost.quakecraft.constants.Permissions;
 import com.gmail.filoghost.quakecraft.enums.Gui;
+import org.bukkit.inventory.InventoryView;
 
 public class GuiListener implements Listener {
 	
@@ -36,10 +37,10 @@ public class GuiListener implements Listener {
 		}
 		
 		Inventory inv = event.getInventory();
-	
+		InventoryView view = event.getView();
 		for (Gui gui : Gui.values()) {
 			
-			if (inv.getTitle().equals(gui.getName())) {
+			if (view.getTitle().equals(gui.getName())) {
 				event.setCancelled(true);
 				
 				if (event.getRawSlot() < inv.getSize()) {

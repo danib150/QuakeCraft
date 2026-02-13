@@ -5,7 +5,8 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map.Entry;
 
-import org.apache.commons.lang.WordUtils;
+
+import com.gmail.filoghost.quakecraft.utils.*;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.command.Command;
@@ -22,10 +23,6 @@ import com.gmail.filoghost.quakecraft.constants.Lang;
 import com.gmail.filoghost.quakecraft.objects.PowerUp;
 import com.gmail.filoghost.quakecraft.objects.arenas.Arena;
 import com.gmail.filoghost.quakecraft.objects.player.QuakePlayer;
-import com.gmail.filoghost.quakecraft.utils.Debug;
-import com.gmail.filoghost.quakecraft.utils.Purge;
-import com.gmail.filoghost.quakecraft.utils.Ranking;
-import com.gmail.filoghost.quakecraft.utils.Utils;
 
 public class QuakeCommand implements CommandExecutor {
 
@@ -78,7 +75,7 @@ public class QuakeCommand implements CommandExecutor {
 		if (args[0].equalsIgnoreCase("join")) {
 			Parser.isPlayer(sender);
 			Parser.argumentLength(args, 2, "Utilizzo corretto: /quake join <arena>");
-			Arena arena = QuakeCraft.getArenaByName(WordUtils.capitalizeFully(args[1]));
+			Arena arena = QuakeCraft.getArenaByName(WorldUtils.capitalizeFully(args[1]));
 			Parser.notNull(arena, "L'arena non esiste.");
 			((Player) sender).setScoreboard(arena.scoreboard);
 			sender.sendMessage("§aSei entrato nell'arena come admin.");

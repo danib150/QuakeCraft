@@ -34,10 +34,10 @@ public class Armor extends Upgrade {
 			leggings = new ItemStack(Material.CHAINMAIL_LEGGINGS);
 			boots = new ItemStack(Material.CHAINMAIL_BOOTS);
 			break;
-		case GOLD_CHESTPLATE:
-			body = new ItemStack(Material.GOLD_CHESTPLATE);
-			leggings = new ItemStack(Material.GOLD_LEGGINGS);
-			boots = new ItemStack(Material.GOLD_BOOTS);
+			case GOLDEN_CHESTPLATE:
+			body = new ItemStack(Material.GOLDEN_CHESTPLATE);
+			leggings = new ItemStack(Material.GOLDEN_LEGGINGS);
+			boots = new ItemStack(Material.GOLDEN_BOOTS);
 			break;
 		case DIAMOND_CHESTPLATE:
 			body = new ItemStack(Material.DIAMOND_CHESTPLATE);

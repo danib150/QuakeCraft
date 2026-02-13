@@ -13,7 +13,7 @@ public class PotionUtils {
 	}
 	
 	public static void giveRespawnResistance(Player player) {
-		player.addPotionEffect(new PotionEffect(PotionEffectType.DAMAGE_RESISTANCE, Numbers.RESPAWN_PROTECTION_TICKS, 0, false), true);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, Numbers.RESPAWN_PROTECTION_TICKS, 0, false), true);
 	}
 	
 }
