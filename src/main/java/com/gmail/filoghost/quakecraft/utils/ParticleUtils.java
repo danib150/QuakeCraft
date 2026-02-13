@@ -176,9 +176,14 @@ public class ParticleUtils {
         World world = loc.getWorld();
         if (world == null) return;
 
-        loc.getWorld().spawnParticle(org.bukkit.Particle.EFFECT, loc, 20, 0.3, 1.0, 0.0, 0);
+        world.spawnParticle(
+                org.bukkit.Particle.HAPPY_VILLAGER,
+                loc,
+                20,
+                0.3, 1.0, 0.3,
+                0
+        );
     }
-
     public static void smallParticle(Location loc, Particle particle) {
         detailedParticle(loc, particle, 0.1F, 0.1F, 0.0F, 2);
     }

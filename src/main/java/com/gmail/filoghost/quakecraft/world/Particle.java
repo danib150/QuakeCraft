@@ -63,9 +63,7 @@ public enum Particle {
         if (world == null) return;
 
         try {
-
             world.spawnParticle(particle, loc, amount, dx, dy, dz, speed);
-
         } catch (IllegalArgumentException ex) {
 
             world.spawnParticle(org.bukkit.Particle.CLOUD, loc, amount, dx, dy, dz, speed);
