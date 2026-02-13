@@ -68,7 +68,7 @@ public class QuakeCraft extends JavaPlugin {
         mainWorld = Bukkit.getWorld("world");
 
 
-        SettingsChecker.run();
+        SettingsChecker.run(this);
 
         if (!getDataFolder().exists()) {
             getDataFolder().mkdir();

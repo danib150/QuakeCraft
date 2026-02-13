@@ -3,7 +3,7 @@ package com.gmail.filoghost.quakecraft.commands;
 import com.gmail.filoghost.quakecraft.constants.Lang;
 import org.bukkit.Bukkit;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.type.WallSign;
+import org.bukkit.block.Sign;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
@@ -94,7 +94,7 @@ public class Parser {
 	}
 	
 	public static void isWallSign(Block block, String message) throws ArgumentException {
-        if (!(block.getState() instanceof WallSign)) {
+        if (!(block.getState() instanceof Sign)) {
 			throw new ArgumentException(message);
         }
     }

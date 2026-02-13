@@ -1,14 +1,12 @@
 package com.gmail.filoghost.quakecraft.commands;
 
-import java.io.File;
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
+import com.gmail.filoghost.quakecraft.QuakeCraft;
+import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
+import com.gmail.filoghost.quakecraft.constants.Lang;
+import com.gmail.filoghost.quakecraft.enums.Gui;
+import com.gmail.filoghost.quakecraft.objects.gui.ArenasIconMenu;
 import com.gmail.filoghost.quakecraft.utils.WorldUtils;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -17,11 +15,10 @@ import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 
-import com.gmail.filoghost.quakecraft.QuakeCraft;
-import com.gmail.filoghost.quakecraft.constants.ConfigNodes;
-import com.gmail.filoghost.quakecraft.constants.Lang;
-import com.gmail.filoghost.quakecraft.enums.Gui;
-import com.gmail.filoghost.quakecraft.objects.gui.ArenasIconMenu;
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ArenaCommand implements CommandExecutor {
 	
@@ -114,8 +111,8 @@ public class ArenaCommand implements CommandExecutor {
 			Parser.notNull(creatingArena, "Prima devi creare un arena con /arena new <nome>");
 			Parser.notNull(creatingArena.getString(ConfigNodes.NAME), "Devi inserire un nome valido");
 			
-			Block block = player.getTargetBlock((Set<Material>) null, 64);
-			Parser.isWallSign(block, "Non stai guardando un cartello! Stai guardando " + block.getType().toString());
+			Block block = player.getTargetBlock(null, 64);
+			Parser.isWallSign(block, "Non stai guardando un cartello! Stai guardando " + block.getType());
 			
 			creatingArena.set(ConfigNodes.SIGN_X, block.getX());
 			creatingArena.set(ConfigNodes.SIGN_Y, block.getY());
